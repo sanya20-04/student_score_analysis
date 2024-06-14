@@ -1,0 +1,83 @@
+import pandas as pd 
+import matplotlib.pyplot as plt 
+import seaborn as sns 
+import numpy as np 
+
+df = pd.read_csv("Original_data_with_more_rows.csv")
+print(df.head())
+
+df.describe()
+
+df.info()
+
+df.isnull().sum()
+
+#Drop unnamed columns 
+df= df.drop("Unnamed: 0", axis = 1)
+print(df.head())
+
+#change weekly study hours column 
+df["WklyStudyHours"]= df["WklyStudyHours"].str.replace("05-Oct","5-10")
+df.head()
+
+#gender distribution 
+plt.figure(figsize = (5,5))
+ax = sns.countplot(data = df , x = "Gender") 
+ax.bar_label(ax.containers[0])
+plt.show()
+
+#parent education impact on student scores
+gb = df.groupby("ParentEduc").agg({"MathScore": 'mean'	,"ReadingScore": 'mean' ,	"WritingScore": 'mean' })
+print(gb)
+
+plt.figure(figsize = (5,5))
+sns.heatmap(gb, annot = True )
+plt.show()
+
+#parent marital status impact on student scores 
+gb1 = df.groupby("ParentMaritalStatus").agg({"MathScore": 'mean'	,"ReadingScore": 'mean' ,	"WritingScore": 'mean' })
+print(gb1)
+
+plt.figure(figsize = (5,5))
+sns.heatmap(gb1, annot = True )
+plt.show()
+
+#to detect outliers 
+sns.boxplot(data = df , x = "MathScore")
+plt.show()
+
+sns.boxplot(data = df , x = "ReadingScore")
+plt.show()
+
+sns.boxplot(data = df , x = "WritingScore")
+plt.show()
+
+print(df["EthnicGroup"].unique())
+
+
+
+#distribution of ethnic groups 
+groupA = df.loc[(df["EthnicGroup"] ==  "group A" )].count()
+groupB = df.loc[(df["EthnicGroup"] ==  "group B" )].count()
+groupC = df.loc[(df["EthnicGroup"] ==  "group C" )].count()
+groupD = df.loc[(df["EthnicGroup"] ==  "group D" )].count()
+groupE = df.loc[(df["EthnicGroup"] ==  "group E" )].count()
+l = ["groupA","groupB","groupC","groupD","groupE"]
+mylist = [groupA["EthnicGroup"],groupB["EthnicGroup"],groupC["EthnicGroup"],groupD["EthnicGroup"],groupE["EthnicGroup"] ]
+print(mylist)
+
+plt.pie(mylist, labels = l, autopct = "%1.2f%%")
+plt.title("Distribution of Ethnic Groups")
+plt.show()
+
+a = sns.countplot(data = df , x= "EthnicGroup")
+a.bar_label(a.containers[0])
+
+
+#impact of sports on student scores 
+gb2 = df.groupby("PracticeSport").agg({"MathScore": 'mean'	,"ReadingScore": 'mean' ,	"WritingScore": 'mean' })
+print(gb2)
+
+plt.figure(figsize = (5,5))
+sns.heatmap(gb2, annot = True )
+plt.show()
